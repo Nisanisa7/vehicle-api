@@ -52,7 +52,15 @@ Create .env file in your root project folder.
 
 ```env
 
-BASE_URL = YOUR BASE_URL
+DB_HOST = YOUR_HOST
+DB_USER = YOUR_USER
+DB_NAME = YOUR_DB_NAME
+DB_PASSWORD = YOUR_PASSWRORD
+PORT = YOUR_PORT
+EMAIL = YOUR_EMAIL
+SECRET_KEY = YOUR_SECRET_KEY
+EMAILPASS =  YOUR_EMAIL_PASS
+BASE_URL = YOUR_BASE_URL
 
 ```
 
@@ -69,12 +77,6 @@ Deploy mode
 ```bash
 npm start
 ```
-
-## REST API
-
-You can view my Postman collection [here](https://www.getpostman.com/collections/65e37e55e8c3d1a69d55) </br>
-or </br>
-[![run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/65e37e55e8c3d1a69d55)
 
 ## Related Project
 * [`Frontend-Vehicle-rental`](https://github.com/Nisanisa7/vehicle-rental)
