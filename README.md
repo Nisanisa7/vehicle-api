@@ -3,7 +3,7 @@
 
   <h3 align="center">Vehicle Rental Api</h3>
   <p align="center">
-  <image align="center" src='./screenshoot/Logo.png'/>
+  <image align="center" src='./screenshoot/Logo-Vehicle.png'/>
   </p>
 
   <p align="center">
