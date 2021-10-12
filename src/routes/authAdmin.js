@@ -8,4 +8,6 @@ router
 .get('/verification/:token', authAdminController.Activation)
 
 
+
+
 module.exports = router

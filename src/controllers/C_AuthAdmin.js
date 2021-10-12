@@ -28,17 +28,30 @@ const Login = async (req, res, next) =>{
             console.log(token);
             console.log(process.env.SECRET_KEY);
             delete user.password;
-            // user.token = token;
+            user.token = token;
 
             //ini set cookienya
             res.cookie('token', token,{
-                httpOnly: true, 
-                maxAge: 60*60*60,
-                secure: true,
-                path:'/',
-                sameSite: 'strict'
+               // httpOnly: true, 
+               max: 7200000,
+               // secure: true,
+               path:'/',
+               // sameSite: 'strict'
             } )
-            helpers.response(res, user, 200)
+            res.cookie("user_isAuth", true,{
+                max: 7200000,
+                path:'/',
+
+            } )
+            res.cookie("user_idAdmin", user.idAdmin, {
+                max: 7200000,
+                path: "/",
+              });
+            res.cookie("user_role", user.role, {
+                max: 7200000,
+                path: "/",
+            });
+            helpers.response(res, user, 200,  {message:"Login Success"})
         }
     );
     })
@@ -97,8 +110,8 @@ const Activation = (req, res, next) =>{
                     console.log(email);
                     authAdminModel.updateStatus(email)
                     .then(()=>{
-                        helpers.response(res, null, 200, {message: "Your account has been successfully verified"})
-                        // res.redirect('http://localhost3000/login')
+                        // helpers.response(res, null, 200, {message: "Your account has been successfully verified"})
+                        res.redirect('http://localhost:3000/email')
                     })
                     .catch((err)=>{
                         console.log(err);

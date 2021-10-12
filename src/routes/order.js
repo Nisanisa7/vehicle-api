@@ -7,7 +7,6 @@ router
 .get('/:idbooking', orderController.getOrderById)
 .get('/custommer/:idCustommer', orderController.getOrderByCust)
 .post('/', orderController.insertOrder)
-// .patch('/:idOrder', orderController.updateOrder)
-// .patch('/cancel/:idOrder', orderController.cancelOrder)
-// .delete('/:id', auth.verifyAccessSeller,  orderController.deleteOrder)
+.patch('/:idbooking', orderController.updateOrder)
+.delete('/:idbooking',  orderController.deleteOrder)
 module.exports = router

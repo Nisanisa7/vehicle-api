@@ -47,6 +47,51 @@ const updateCustommer = (idCustommer, data) => {
     );
   });
 };
+
+//===================================================================
+const getAllAdmin = () =>{
+  return new Promise((resolve, reject)=>{
+      // const queryCount = ('SELECT count(*) as numRows FROM admin') 
+      connection.query(`SELECT * FROM admin`, (error, result)=>{
+          if (!error) {
+              resolve(result)
+          } else {
+              reject(error)
+          }
+      })
+  })
+}
+const getAdminID = (idAdmin) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      "SELECT * FROM admin where idAdmin = ?",
+      idAdmin,
+      (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
+};
+const updateAdmin = (idAdmin, data) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      "UPDATE admin SET ? WHERE idAdmin = ?",
+      [data, idAdmin],
+      (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
     // getAllSeller,
     // updateSeller,
@@ -55,6 +100,10 @@ module.exports = {
 
     getAllCustommer,
     getCustommerID,
-    updateCustommer
+    updateCustommer,
+
+    getAllAdmin,
+    getAdminID,
+    updateAdmin
     
 }

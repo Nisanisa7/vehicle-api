@@ -91,33 +91,41 @@ const insertVehicle = (req, res, next)=>{
 // ---------------------------------------------------------------
 // update vehicle
 const updateVehicle = (req,res,next)=>{
-    const{vehicle_name, description, price, status } = req.body
     const idvehicle = req.params.idvehicle
-    const data ={
-        vehicle_name : vehicle_name,
-        description : description,
-        price : price,
-        status : status,
-        image: `${process.env.BASE_URL}/file/`+ req.file.filename,
-        createdAt : new Date(),
-        updatedAt : new Date()        
+    let profile = ""
+    let imageUserInput = ""
+
+    if(!req.file){
+        profile = ""
+    } else {
+        imageUserInput = req.file.filename
     }
+    vehicleModel.getVehicleById(idvehicle)
+    .then((result)=>{
+        const oldImageProfile = result[0].image
+        const newImageProfile = `${process.env.BASE_URL}/file/${imageUserInput}`
+        const{vehicle_name, description, price, status } = req.body
+        if(imageUserInput == ""){
+            profile = oldImageProfile
+        } else {
+            profile = newImageProfile
+        }
+        const data ={
+            vehicle_name : vehicle_name,
+            description : description,
+            price : price,
+            status : status,
+            image: profile,
+            createdAt : new Date(),
+            updatedAt : new Date()        
+        }
+    
     vehicleModel.updateVehicle(idvehicle, data)
-    .then(()=>{
-        
+    .then(()=>{   
         helpers.response(res, data, 200, {message: "Data Successfully Updated"})
     })
-    .catch((error)=>{
-        console.log(error);
-        helpers.response(res, null, 500, {message: 'internal server error'})
-        fs.unlink(
-            `./uploads/${req.file.filename}`, (err =>{
-                if(err){
-                    console.log(err);
-                }
-            })
-        )
-    })
+   4
+})
 }
 //------------------------------------------------
 // Delete Product

@@ -9,5 +9,6 @@ router
 
 .get('/checktoken', authCustController.CheckToken)
 .post('/profile', authCustController.Profile)
+.get('/logout', authCustController.Logout)
 
 module.exports = router

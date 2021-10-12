@@ -13,9 +13,7 @@ const getAllCustommer = (req, res, next) =>{
     .then((result)=>{
         const custommer = result
         const totalpages = Math.ceil(custommer.count/limit)
-        
-        // client.set(`chaceProduct`, JSON.stringify(products));
-        // console.log(products);
+   
         res.status(200)
         res.json({
             "message": 'success',
@@ -63,14 +61,13 @@ const updateCustommer = (req, res, next) =>{
     .then((result)=>{
         const oldImageProfile = result[0].image
         const newImageProfile = `${process.env.BASE_URL}/file/${imageUserInput}`
-        const {name, display_name, address, phone_number, gender, datebirth} = req.body
+        const { display_name, address, phone_number, gender, datebirth} = req.body
         if(imageUserInput == ""){
             profile = oldImageProfile
         } else {
             profile = newImageProfile
         }
         const data = {
-            name: name, 
             display_name: display_name, 
             address: address, 
             phone_number: phone_number,
@@ -97,6 +94,83 @@ const updateCustommer = (req, res, next) =>{
         })
     })
 } 
+
+//================================================
+const getAdmin = (req, res)=>{
+    userModel.getAllAdmin()
+    .then((result)=>{
+        const admin = result
+        console.log(admin);
+        helpers.response(res, admin, 200, {message: "Showing data user"})
+    })
+    .catch((error)=>{
+        console.log(error);
+        helpers.response(res, null, 500, {message: 'internal server error'})
+    })
+}
+const getAdminByID = (req, res, next) =>{
+    const idAdmin = req.params.idAdmin
+    userModel.getAdminID(idAdmin)
+    .then((result)=>{
+        const admin = result
+        helpers.response(res, admin, 200, {message: "Showing data user"})
+    })
+    .catch((error)=>{
+        console.log(error);
+        res.status(500)
+        res.json({
+            message: 'internal server error'
+        })
+    })
+}
+const updateAdmin = (req, res, next) =>{
+    const idAdmin = req.params.idAdmin
+    let profile = ""
+    let imageUserInput = ""
+
+    if(!req.file){
+        profile = ""
+    } else {
+        imageUserInput = req.file.filename
+    }
+    console.log(imageUserInput);
+    userModel.getAdminID(idAdmin)
+    .then((result)=>{
+        const oldImageProfile = result[0].image
+        const newImageProfile = `${process.env.BASE_URL}/file/${imageUserInput}`
+        const {display_name, address, phone_number, gender, datebirth} = req.body
+        if(imageUserInput == ""){
+            profile = oldImageProfile
+        } else {
+            profile = newImageProfile
+        }
+        const data = {
+            display_name: display_name, 
+            address: address, 
+            phone_number: phone_number,
+            gender: gender,
+            datebirth: datebirth,
+            image: profile,
+            updatedAt: new Date()
+        }
+        console.log(data);
+        userModel.updateAdmin(idAdmin, data)
+        .then(()=>{
+            helpers.response(res, data, 200, {message: "Data Successfully Updated"})
+        })
+        .catch((error)=>{
+            console.log(error);
+            helpers.response(res, null, 500, {message: 'internal server error'})
+            fs.unlink(
+                `./uploads/${req.file.filename}`, (err =>{
+                    if(err){
+                        console.log(err);
+                    }
+                })
+            )
+        })
+    })
+} 
 module.exports = {
     // getAllSeller,
     // updateSeller,
@@ -105,4 +179,8 @@ module.exports = {
     getAllCustommer,
     getCustommerByID,
     updateCustommer,
+
+    getAdmin,
+    getAdminByID,
+    updateAdmin,
 }

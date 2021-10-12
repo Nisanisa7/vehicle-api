@@ -32,12 +32,25 @@ const Login = async(req, res, next)=>{
 
             //ini set cookienya
             res.cookie('token', token,{
-                httpOnly: true, 
+                // httpOnly: true, 
                 max: 7200000,
-                secure: true,
+                // secure: true,
                 path:'/',
-                sameSite: 'strict'
+                // sameSite: 'strict'
             } )
+            res.cookie("user_isAuth", true,{
+                max: 7200000,
+                path:'/',
+
+            } )
+            res.cookie("user_idCustommer", user.idCustommer, {
+                max: 7200000,
+                path: "/",
+              });
+            res.cookie("user_role", user.role, {
+                max: 7200000,
+                path: "/",
+            });
             helpers.response(res, user, 200)
         }
     );
@@ -104,8 +117,8 @@ const userActivation = (req, res, next) =>{
                     console.log(email);
                     authCustModel.updateStatus(email)
                     .then(()=>{
-                        helpers.response(res, null, 200, {message: "Your account has been successfully verified"})
-                        // res.redirect('http://localhost3000/login')
+                        // helpers.response(res, null, 200, {message: "Your account has been successfully verified"})
+                        res.redirect('http://localhost:3000/email')
                     })
                     .catch((err)=>{
                         console.log(err);
@@ -176,10 +189,27 @@ const Profile = (req, res, next)=>{
     const token = req.cookie.token
     console.log(token);
 }
+const Logout = (req, res, next)=>{
+    try {
+        res.clearCookie('token')
+        res.clearCookie('user_idCustommer')
+        res.clearCookie('user_role')
+        res.clearCookie('user_isAuth')
+    
+        res.status(200);
+        res.json({
+          message: 'Success logout'
+        });
+      } catch (error) {
+        console.log(error)
+        next(new Error(error.message))
+      }
+}
 module.exports ={
     Login,
     Register,
     userActivation,
     CheckToken,
-    Profile
+    Profile,
+    Logout
 }

@@ -69,7 +69,7 @@ const getAllOrder = (req, res, next) =>{
 }
 // INSERT DATA TO DB =======================================
 const insertOrder = (req, res, next)=>{
-    const {idCustommer, vehicle_name, totalprice, amount, rentalDay, image, reservationDate, payment} = req.body
+    const {idCustommer, vehicle_name, totalprice, amount, rentalDay, image_order, reservationDate, payment} = req.body
     const data = {
         idbooking: uuidv4(),
         idCustommer : idCustommer,
@@ -77,10 +77,10 @@ const insertOrder = (req, res, next)=>{
         totalprice : totalprice,
         amount : amount,
         rentalDay : rentalDay,
-        image : image,
+        image_order : image_order,
         reservationDate : reservationDate,
         payment :payment,
-        status: "Waiting confirmation",
+        status_order: "Waiting confirmation",
     }
    orderModel.insertOrder(data)
     .then(()=>{
@@ -97,13 +97,47 @@ const insertOrder = (req, res, next)=>{
         })
     })
 }
+const deleteOrder = (req, res, next) =>{
+    const idbooking = req.params.idbooking
+    orderModel.deleteOrder(idbooking)
+    .then(()=>{
+        res.status(200)
+        res.json({
+            message:  'item has been successfully deleted'
+        })
+    })
+    .catch(()=>{
+        console.log(err);
+        res.status(500)
+        res.json({
+            message: 'internal server error'
+        })
+    })
+}
+const updateOrder = (req, res, next)=>{
+    const idbooking = req.params.idbooking
+    const {status_order} = req.body
+    const data = {
+        status_order : status_order,
+    }
+    console.log(data);
+    orderModel.updateOrder(data, idbooking)
+    .then(()=>{
+        helpers.response(res, data, 200, {message: "Data Successfully updated"})
+    })
+    .catch((error)=>{
+        console.log(error);
+        helpers.response(res, null, 500, {message: 'internal server error'})
+    })
+}
 
 module.exports = {
     getAllOrder,
     insertOrder,
-    // updateOrder,
+    updateOrder,
     // deleteOrder,
     getOrderById,
     // cancelOrder,
-    getOrderByCust
+    getOrderByCust,
+    deleteOrder
 }
