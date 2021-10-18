@@ -23,7 +23,7 @@ const myMiddleware = (req, res, next) => {
   app.use(myMiddleware)
   const optionCors ={
     credentials: true,
-    origin: 'http://localhost:3000'
+    origin: true
   }
   app.use(cors(optionCors))
   //Middleware cookie
