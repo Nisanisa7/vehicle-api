@@ -32,11 +32,8 @@ const Login = async (req, res, next) =>{
 
             //ini set cookienya
             res.cookie('token', token,{
-               // httpOnly: true, 
                max: 7200000,
-               // secure: true,
                path:'/',
-               // sameSite: 'strict'
             } )
             res.cookie("user_isAuth", true,{
                 max: 7200000,
