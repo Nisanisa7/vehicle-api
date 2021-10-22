@@ -8,7 +8,8 @@ const { hash } = require('bcrypt');
 bcrypt = require('bcryptjs');
 
 const Login = async(req, res, next)=>{
-    const {email, password} = req.body
+    try {
+        const {email, password} = req.body
     const result = await authCustModel.findUser(email)
     const user = result[0]
 
@@ -55,49 +56,55 @@ const Login = async(req, res, next)=>{
         }
     );
     })
+    } catch (error) {
+        console.log(error);
+    }
+    
 // }
 }
 // ==========================================
 const Register = async (req, res, next) =>{
-    const {name, email, password} = req.body
-    const user = await authCustModel.findUser(email)
-    if (user.length > 0){
-        return helpers.response(res, null, 401, {message:"This email address is already being used"})
-    }
-    bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(password , salt, function(err, hash) {
-
-            const data = {
-                idCustommer: uuidv4(),
-                name: name,
-                email: email,
-                password: hash,
-                status: 'inactive',
-                role: 'custommer',
-                createdAt : new Date(),
-                updatedAt : new Date()
-            }
-
-            authCustModel.Register(data)
-            .then((result)=>{
-                delete data.password
-                jwt.sign({ email: data.email }, process.env.SECRET_KEY, function(err, token) {
-                    emailActivation.sendEmail(data.email, data.name, token)
-                  });
-                helpers.response(res, data , 200, {message: "registered success! check your email for activation "})
+    try {
+        const {name, email, password} = req.body
+        const user = await authCustModel.findUser(email)
+        if (user.length > 0){
+            return helpers.response(res, null, 401, {message:"This email address is already being used"})
+        }
+        bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(password , salt, function(err, hash) {
+    
+                const data = {
+                    idCustommer: uuidv4(),
+                    name: name,
+                    email: email,
+                    password: hash,
+                    status: 'inactive',
+                    role: 'custommer',
+                    createdAt : new Date(),
+                    updatedAt : new Date()
+                }
+    
+                authCustModel.Register(data)
+                .then((result)=>{
+                    delete data.password
+                    jwt.sign({ email: data.email }, process.env.SECRET_KEY, function(err, token) {
+                        emailActivation.sendEmail(data.email, data.name, token)
+                      });
+                    helpers.response(res, data , 200, {message: "registered success! check your email for activation "})
+                })
+                .catch((error)=>{
+                    console.log(error);
+                    helpers.response(res, null, 500, {message: 'internal server error'})
+                })
+    
+    
             })
-            .catch((error)=>{
-                console.log(error);
-                helpers.response(res, null, 500, {message: 'internal server error'})
-            })
-
 
         })
-
-
-
-
-    })
+    } catch (error) {
+        console.log(error);
+    }
+   
 }
 // =============================================================
 
