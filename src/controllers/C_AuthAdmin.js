@@ -31,11 +31,11 @@ const Login = async (req, res, next) =>{
                 delete user.password;
                 user.token = token;
     
-                //ini set cookienya
-                // res.cookie('token', token,{
-                //    max: 7200000,
-                //    path:'/',
-                // } )
+                // ini set cookienya
+                res.cookie('token', token,{
+                   max: 7200000,
+                   path:'/',
+                } )
                 res.cookie("user_isAuth", true,{
                     max: 7200000,
                     path:'/',
