@@ -156,7 +156,7 @@ const updateAdmin = async(req, res, next) =>{
         data.image = UploadResponse.secure_url
         }
         userModel.updateAdmin(idAdmin, data)
-        .then((res)=>{
+        .then((result)=>{
             helpers.response(res, data, 200, {message: "Data Successfully Updated"})
         })
         .catch((err)=>{
