@@ -1,7 +1,12 @@
 const userModel = require('../models/Muser')
 const helpers = require('../helpers/helpers')
 var fs = require('fs');
-
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({
+  cloud_name: "nisanisa",
+  api_key: "415693727536492",
+  api_secret: "unNAaDTSlWskGqW5JwnitPc6iPA",
+});
 const getAllCustommer = (req, res, next) =>{
     const page = parseInt(req.query.page) 
     const search = req.query.search || ''
@@ -46,53 +51,61 @@ const getCustommerByID = (req, res, next) =>{
         })
     })
 }
-const updateCustommer = (req, res, next) =>{
-    const idCustommer = req.params.idCustommer
-    let profile = ""
-    let imageUserInput = ""
-
-    if(!req.file){
-        profile = ""
-    } else {
-        imageUserInput = req.file.filename
-    }
-    console.log(imageUserInput);
-    userModel.getCustommerID(idCustommer)
-    .then((result)=>{
-        const oldImageProfile = result[0].image
-        const newImageProfile = `${process.env.BASE_URL}/file/${imageUserInput}`
-        const { display_name, address, phone_number, gender, datebirth} = req.body
-        if(imageUserInput == ""){
-            profile = oldImageProfile
+const updateCustommer = async(req, res, next) =>{
+    try {
+        const idCustommer = req.params.idCustommer
+        let profile = ""
+        let imageUserInput = ""
+        const { path } = req.file;
+        const UploadResponse = await cloudinary.uploader.upload(path, {
+          upload_preset: "blanja",
+        });
+        if(!req.file){
+            profile = ""
         } else {
-            profile = newImageProfile
+            imageUserInput = path
         }
-        const data = {
-            display_name: display_name, 
-            address: address, 
-            phone_number: phone_number,
-            gender: gender,
-            datebirth: datebirth,
-            image: profile,
-            updatedAt: new Date()
-        }
-        console.log(data);
-        userModel.updateCustommer(idCustommer, data)
-        .then(()=>{
-            helpers.response(res, data, 200, {message: "Data Successfully Updated"})
+        console.log(imageUserInput);
+        userModel.getCustommerID(idCustommer)
+        .then((result)=>{
+            const oldImageProfile = result[0].image
+            const newImageProfile = UploadResponse.secure_url
+            const { display_name, address, phone_number, gender, datebirth} = req.body
+            if(imageUserInput == ""){
+                profile = oldImageProfile
+            } else {
+                profile = newImageProfile
+            }
+            const data = {
+                display_name: display_name, 
+                address: address, 
+                phone_number: phone_number,
+                gender: gender,
+                datebirth: datebirth,
+                image: profile,
+                updatedAt: new Date()
+            }
+            console.log(data);
+            userModel.updateCustommer(idCustommer, data)
+            .then(()=>{
+                helpers.response(res, data, 200, {message: "Data Successfully Updated"})
+            })
+            .catch((error)=>{
+                console.log(error);
+                helpers.response(res, null, 500, {message: 'internal server error'})
+                // fs.unlink(
+                //     `./uploads/${req.file.filename}`, (err =>{
+                //         if(err){
+                //             console.log(err);
+                //         }
+                //     })
+                // )
+            })
         })
-        .catch((error)=>{
-            console.log(error);
-            helpers.response(res, null, 500, {message: 'internal server error'})
-            fs.unlink(
-                `./uploads/${req.file.filename}`, (err =>{
-                    if(err){
-                        console.log(err);
-                    }
-                })
-            )
-        })
-    })
+    } catch (error) {
+        
+    }
+   
 } 
 
 //================================================
