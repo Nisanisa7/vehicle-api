@@ -12,7 +12,7 @@ router
 .get('/:idvehicle', vehicleController.getVehicleById)
 .get('/type/:id', vehicleController.getByType)
 .post('/', upload.single('image'), vehicleController.insertVehicle)
-.put('/:idvehicle', upload.single('image'), vehicleController.updateVehicle)
+.patch('/:idvehicle', upload.single('image'), vehicleController.updateVehicle)
 .delete('/:idvehicle', vehicleController.deleteVehicle)
 
 

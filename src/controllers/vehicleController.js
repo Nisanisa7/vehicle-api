@@ -107,7 +107,7 @@ const insertVehicle = async(req, res, next)=>{
 // update vehicle
 const updateVehicle = async(req,res,next)=>{
     try {
-        const idvehicle = req.params.idvehicle
+    const idvehicle = req.params.idvehicle
     let profile = ""
     let imageUserInput = ""
     const UploadResponse = await cloudinary.uploader.upload(path, {
