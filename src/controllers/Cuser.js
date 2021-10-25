@@ -138,6 +138,7 @@ const getAdminByID = (req, res, next) =>{
 }
 const updateAdmin = async(req, res, next) =>{
     try {
+        console.log(req.body);
         const idAdmin = req.params.idAdmin
         let profile = ""
         let imageUserInput = ""

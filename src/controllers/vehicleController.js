@@ -139,13 +139,13 @@ const updateVehicle = async(req,res,next)=>{
         }
     
     vehicleModel.updateVehicle(idvehicle, data)
-    .then(()=>{   
-        helpers.response(res, data, 200, {message: "Data Successfully Updated"})
-    })
-    .catch((error)=>{
-        console.log(error);
-        helpers.response(res, null, 500, {message: 'internal server error'})
-    })  
+        .then(()=>{   
+            helpers.response(res, data, 200, {message: "Data Successfully Updated"})
+        })
+        .catch((error)=>{
+            console.log(error);
+            helpers.response(res, null, 500, {message: 'internal server error'})
+        })  
     })
     } catch (error) {
         
