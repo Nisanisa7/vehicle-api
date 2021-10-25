@@ -59,6 +59,10 @@ const getVehicleById = (req, res, next)=>{
 // ---------------------------------------------------
 // --- input vehicle
 const insertVehicle = (req, res, next)=>{
+    const { path } = req.file;
+    const UploadResponse = await cloudinary.uploader.upload(path, {
+      upload_preset: "blanja",
+    });
     const {vehicle_name, description, price, location, status, stock, id} = req.body
     const data = {
         vehicle_name : vehicle_name,
@@ -68,7 +72,7 @@ const insertVehicle = (req, res, next)=>{
         location : location,
         stock : stock,
         id : id,
-        image : `${process.env.BASE_URL}/file/`+ req.file.filename,
+        image : UploadResponse.secure_url,
         createdAt : new Date(),
         updatedAt : new Date()
     }
