@@ -32,13 +32,13 @@ const Login = async(req, res, next)=>{
             user.token = token;
 
             //ini set cookienya
-            res.cookie('token', token,{
-                // httpOnly: true, 
-                max: 7200000,
-                // secure: true,
-                path:'/',
-                // sameSite: 'strict'
-            } )
+            // res.cookie('token', token,{
+            //     // httpOnly: true, 
+            //     max: 7200000,
+            //     // secure: true,
+            //     path:'/',
+            //     // sameSite: 'strict'
+            // } )
             res.cookie("user_isAuth", true,{
                 max: 7200000,
                 path:'/',
@@ -78,7 +78,7 @@ const Register = async (req, res, next) =>{
                     name: name,
                     email: email,
                     password: hash,
-                    status: 'inactive',
+                    status: 'Active',
                     role: 'custommer',
                     createdAt : new Date(),
                     updatedAt : new Date()
@@ -88,7 +88,7 @@ const Register = async (req, res, next) =>{
                 .then((result)=>{
                     delete data.password
                     jwt.sign({ email: data.email }, process.env.SECRET_KEY, function(err, token) {
-                        emailActivation.sendEmail(data.email, data.name, token)
+                        // emailActivation.sendEmail(data.email, data.name, token)
                       });
                     helpers.response(res, data , 200, {message: "registered success! check your email for activation "})
                 })
