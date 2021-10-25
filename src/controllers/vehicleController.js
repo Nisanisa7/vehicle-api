@@ -105,20 +105,23 @@ const insertVehicle = async(req, res, next)=>{
 }
 // ---------------------------------------------------------------
 // update vehicle
-const updateVehicle = (req,res,next)=>{
-    const idvehicle = req.params.idvehicle
+const updateVehicle = async(req,res,next)=>{
+    try {
+        const idvehicle = req.params.idvehicle
     let profile = ""
     let imageUserInput = ""
-
+    const UploadResponse = await cloudinary.uploader.upload(path, {
+        upload_preset: "vehicle",
+      });
     if(!req.file){
         profile = ""
     } else {
-        imageUserInput = req.file.filename
+        imageUserInput = UploadResponse.secure_url
     }
     vehicleModel.getVehicleById(idvehicle)
     .then((result)=>{
         const oldImageProfile = result[0].image
-        const newImageProfile = `${process.env.BASE_URL}/file/${imageUserInput}`
+        const newImageProfile = UploadResponse.secure_url
         const{vehicle_name, description, price, status } = req.body
         if(imageUserInput == ""){
             profile = oldImageProfile
@@ -139,8 +142,15 @@ const updateVehicle = (req,res,next)=>{
     .then(()=>{   
         helpers.response(res, data, 200, {message: "Data Successfully Updated"})
     })
-   4
-})
+    .catch((error)=>{
+        console.log(error);
+        helpers.response(res, null, 500, {message: 'internal server error'})
+    })  
+    })
+    } catch (error) {
+        
+    }
+    
 }
 //------------------------------------------------
 // Delete Product

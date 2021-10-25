@@ -58,7 +58,7 @@ const updateCustommer = async(req, res, next) =>{
         let imageUserInput = ""
         const { path } = req.file;
         const UploadResponse = await cloudinary.uploader.upload(path, {
-          upload_preset: "blanja",
+          upload_preset: "vehicle",
         });
         if(!req.file){
             profile = ""
