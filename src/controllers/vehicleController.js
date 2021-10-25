@@ -2,6 +2,12 @@ const connection = require('../configs/db')
 const vehicleModel = require('../models/Mvehicle')
 const helpers = require('../helpers/helpers')
 var fs = require('fs');
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({
+  cloud_name: "nisanisa",
+  api_key: "415693727536492",
+  api_secret: "unNAaDTSlWskGqW5JwnitPc6iPA",
+});
 // -------------------------------------------------------------
 
 
