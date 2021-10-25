@@ -58,39 +58,44 @@ const getVehicleById = (req, res, next)=>{
 }
 // ---------------------------------------------------
 // --- input vehicle
-const insertVehicle = (req, res, next)=>{
-    const { path } = req.file;
-    const UploadResponse = await cloudinary.uploader.upload(path, {
-      upload_preset: "blanja",
-    });
-    const {vehicle_name, description, price, location, status, stock, id} = req.body
-    const data = {
-        vehicle_name : vehicle_name,
-        description : description,
-        price : price,
-        status : status,
-        location : location,
-        stock : stock,
-        id : id,
-        image : UploadResponse.secure_url,
-        createdAt : new Date(),
-        updatedAt : new Date()
+const insertVehicle = async(req, res, next)=>{
+    try {
+        const { path } = req.file;
+        const UploadResponse = await cloudinary.uploader.upload(path, {
+          upload_preset: "blanja",
+        });
+        const {vehicle_name, description, price, location, status, stock, id} = req.body
+        const data = {
+            vehicle_name : vehicle_name,
+            description : description,
+            price : price,
+            status : status,
+            location : location,
+            stock : stock,
+            id : id,
+            image : UploadResponse.secure_url,
+            createdAt : new Date(),
+            updatedAt : new Date()
+        }
+        vehicleModel.insertVehicle(data)
+        .then(()=>{
+            helpers.response(res, data, 200, {message: "Data Successfully Inserted"})
+        })
+        .catch((error)=>{
+            console.log(error);
+            helpers.response(res, null, 500, {message: 'internal server error'})
+            fs.unlink(
+                `./uploads/${req.file.filename}`, (err =>{
+                    if(err){
+                        console.log(err);
+                    }
+                })
+            )
+        })
+    } catch (error) {
+        
     }
-    vehicleModel.insertVehicle(data)
-    .then(()=>{
-        helpers.response(res, data, 200, {message: "Data Successfully Inserted"})
-    })
-    .catch((error)=>{
-        console.log(error);
-        helpers.response(res, null, 500, {message: 'internal server error'})
-        fs.unlink(
-            `./uploads/${req.file.filename}`, (err =>{
-                if(err){
-                    console.log(err);
-                }
-            })
-        )
-    })
+   
 }
 // ---------------------------------------------------------------
 // update vehicle
