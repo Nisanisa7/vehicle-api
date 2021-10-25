@@ -138,56 +138,77 @@ const getAdminByID = (req, res, next) =>{
 }
 const updateAdmin = async(req, res, next) =>{
     try {
-        console.log(req.body);
         const idAdmin = req.params.idAdmin
-        let profile = ""
-        let imageUserInput = ""
+        const {display_name, address, phone_number, gender, datebirth} = req.body
+        const data = {
+          display_name: display_name, 
+          address: address, 
+          phone_number: phone_number,
+          gender: gender,
+          datebirth: datebirth,
+          updatedAt: new Date()
+        }
+        if(req.file){
         const { path } = req.file;
         const UploadResponse = await cloudinary.uploader.upload(path, {
-          upload_preset: "blanja",
+            upload_preset: "vehicle",
         });
-        if(!req.file){
-            profile = ""
-        } else {
-            imageUserInput = path
+        data.image = UploadResponse.secure_url
         }
-        console.log(imageUserInput);
-        userModel.getAdminID(idAdmin)
-        .then((result)=>{
-            const oldImageProfile = result[0].image
-            const newImageProfile = UploadResponse.secure_url
-            const {display_name, address, phone_number, gender, datebirth} = req.body
-            if(imageUserInput == ""){
-                profile = oldImageProfile
-            } else {
-                profile = newImageProfile
-            }
-            const data = {
-                display_name: display_name, 
-                address: address, 
-                phone_number: phone_number,
-                gender: gender,
-                datebirth: datebirth,
-                image: profile,
-                updatedAt: new Date()
-            }
-            console.log(data);
-            userModel.updateAdmin(idAdmin, data)
-            .then(()=>{
-                helpers.response(res, data, 200, {message: "Data Successfully Updated"})
-            })
-            .catch((error)=>{
-                console.log(error);
-                helpers.response(res, null, 500, {message: 'internal server error'})
-                fs.unlink(
-                    `./uploads/${req.file.filename}`, (err =>{
-                        if(err){
-                            console.log(err);
-                        }
-                    })
-                )
-            })
+        userModel.updateAdmin(idAdmin, data)
+        .then((res)=>{
+            helpers.response(res, data, 200, {message: "Data Successfully Updated"})
         })
+        .catch((err)=>{
+            console.log(err);
+            helpers.response(res, null, 500, {message: 'internal server error'})
+        })
+        // if(!req.file){
+        //     profile = ""
+        // } else {
+        //     const { path } = req.file;
+        //     const UploadResponse = await cloudinary.uploader.upload(path, {
+        //         upload_preset: "blanja",
+        //     });
+        //     imageUserInput = UploadResponse.secure_url
+        // }
+   
+        // userModel.getAdminID(idAdmin)
+        // .then((result)=>{
+        //     const oldImageProfile = result[0].image
+        //     const newImageProfile = UploadResponse.secure_url
+        //     const {display_name, address, phone_number, gender, datebirth} = req.body
+        //     if(imageUserInput == ""){
+        //         profile = oldImageProfile
+        //     } else {
+        //         profile = newImageProfile
+        //     }
+        //     const data = {
+        //         display_name: display_name, 
+        //         address: address, 
+        //         phone_number: phone_number,
+        //         gender: gender,
+        //         datebirth: datebirth,
+        //         image: profile,
+        //         updatedAt: new Date()
+        //     }
+        //     console.log(data);
+        //     userModel.updateAdmin(idAdmin, data)
+        //     .then(()=>{
+        //         helpers.response(res, data, 200, {message: "Data Successfully Updated"})
+        //     })
+        //     .catch((error)=>{
+        //         console.log(error);
+        //         helpers.response(res, null, 500, {message: 'internal server error'})
+        //         // fs.unlink(
+        //         //     `./uploads/${req.file.filename}`, (err =>{
+        //         //         if(err){
+        //         //             console.log(err);
+        //         //         }
+        //         //     })
+        //         // )
+        //     })
+        // })
     } catch (error) {
         
     }
