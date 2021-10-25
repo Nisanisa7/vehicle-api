@@ -90,13 +90,13 @@ const insertVehicle = async(req, res, next)=>{
         .catch((error)=>{
             console.log(error);
             helpers.response(res, null, 500, {message: 'internal server error'})
-            fs.unlink(
-                `./uploads/${req.file.filename}`, (err =>{
-                    if(err){
-                        console.log(err);
-                    }
-                })
-            )
+            // fs.unlink(
+            //     `./uploads/${req.file.filename}`, (err =>{
+            //         if(err){
+            //             console.log(err);
+            //         }
+            //     })
+            // )
         })
     } catch (error) {
         
