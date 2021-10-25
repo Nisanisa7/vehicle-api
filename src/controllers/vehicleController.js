@@ -68,7 +68,7 @@ const insertVehicle = async(req, res, next)=>{
     try {
         const { path } = req.file;
         const UploadResponse = await cloudinary.uploader.upload(path, {
-          upload_preset: "blanja",
+          upload_preset: "vehicle",
         });
         const {vehicle_name, description, price, location, status, stock, id} = req.body
         const data = {
