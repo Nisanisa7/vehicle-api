@@ -61,7 +61,6 @@ const updateCustommer = async(req, res, next) =>{
             phone_number: phone_number,
             gender: gender,
             datebirth: datebirth,
-            image: profile,
             updatedAt: new Date()
         }
         if(req.file){
