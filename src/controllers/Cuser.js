@@ -54,53 +54,30 @@ const getCustommerByID = (req, res, next) =>{
 const updateCustommer = async(req, res, next) =>{
     try {
         const idCustommer = req.params.idCustommer
-        let profile = ""
-        let imageUserInput = ""
-        const { path } = req.file;
-        const UploadResponse = await cloudinary.uploader.upload(path, {
-          upload_preset: "vehicle",
-        });
-        if(!req.file){
-            profile = ""
-        } else {
-            imageUserInput = UploadResponse.secure_url
+        const { display_name, address, phone_number, gender, datebirth} = req.body
+        const data = {
+            display_name: display_name, 
+            address: address, 
+            phone_number: phone_number,
+            gender: gender,
+            datebirth: datebirth,
+            image: profile,
+            updatedAt: new Date()
         }
-        console.log(imageUserInput);
-        userModel.getCustommerID(idCustommer)
-        .then((result)=>{
-            const oldImageProfile = result[0].image
-            const newImageProfile = UploadResponse.secure_url
-            const { display_name, address, phone_number, gender, datebirth} = req.body
-            if(imageUserInput == ""){
-                profile = oldImageProfile
-            } else {
-                profile = newImageProfile
-            }
-            const data = {
-                display_name: display_name, 
-                address: address, 
-                phone_number: phone_number,
-                gender: gender,
-                datebirth: datebirth,
-                image: profile,
-                updatedAt: new Date()
-            }
-            console.log(data);
-            userModel.updateCustommer(idCustommer, data)
-            .then(()=>{
-                helpers.response(res, data, 200, {message: "Data Successfully Updated"})
-            })
-            .catch((error)=>{
-                console.log(error);
-                helpers.response(res, null, 500, {message: 'internal server error'})
-                // fs.unlink(
-                //     `./uploads/${req.file.filename}`, (err =>{
-                //         if(err){
-                //             console.log(err);
-                //         }
-                //     })
-                // )
-            })
+        if(req.file){
+            const { path } = req.file;
+            const UploadResponse = await cloudinary.uploader.upload(path, {
+            upload_preset: "vehicle",
+        });
+            data.image = UploadResponse.secure_url
+        }
+        userModel.updateCustommer(idCustommer, data)
+        .then(()=>{
+        helpers.response(res, data, 200, {message: "Data Successfully Updated"})
+        })
+        .catch((error)=>{
+        console.log(error);
+        helpers.response(res, null, 500, {message: 'internal server error'})
         })
     } catch (error) {
         
@@ -156,7 +133,7 @@ const updateAdmin = async(req, res, next) =>{
         data.image = UploadResponse.secure_url
         }
         userModel.updateAdmin(idAdmin, data)
-        .then((result)=>{
+        .then(()=>{
             helpers.response(res, data, 200, {message: "Data Successfully Updated"})
         })
         .catch((err)=>{
