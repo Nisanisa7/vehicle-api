@@ -32,10 +32,10 @@ const Login = async (req, res, next) =>{
                 user.token = token;
     
                 // ini set cookienya
-                // res.cookie('token', token,{
-                //    max: 7200000,
-                //    path:'/',
-                // } )
+                res.cookie('token', token,{
+                   max: 7200000,
+                   path:'/',
+                } )
                 res.cookie("user_isAuth", true,{
                     max: 7200000,
                     path:'/',
