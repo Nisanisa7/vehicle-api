@@ -32,13 +32,13 @@ const Login = async(req, res, next)=>{
             user.token = token;
 
             //ini set cookienya
-            // res.cookie('token', token,{
-            //     // httpOnly: true, 
-            //     max: 7200000,
-            //     // secure: true,
-            //     path:'/',
-            //     // sameSite: 'strict'
-            // } )
+            res.cookie('token', token,{
+                // httpOnly: true, 
+                max: 7200000,
+                // secure: true,
+                path:'/',
+                // sameSite: 'strict'
+            } )
             res.cookie("user_isAuth", true,{
                 max: 7200000,
                 path:'/',
